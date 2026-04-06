@@ -52,8 +52,8 @@ motto:      "Code. Learn. Repeat."
 ## 📊 GitHub Stats
 
 <div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=kisajaBeddawala&hide_title=false&hide_rank=false&show_icons=true&include_all_commits=true&count_private=true&theme=tokyonight&hide_border=true&border_radius=12" height="160" alt="GitHub stats" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs?username=kisajaBeddawala&locale=en&hide_title=false&layout=compact&card_width=320&langs_count=8&theme=tokyonight&hide_border=true&border_radius=12" height="160" alt="Top languages" />
+  <img src="https://github-readme-stats-sigma-five.vercel.app/api?username=kisajaBeddawala&show_icons=true&theme=tokyonight&hide_border=true&count_private=true&cache_seconds=1800" height="160" alt="GitHub stats" />
+  <img src="https://github-readme-stats-sigma-five.vercel.app/api/top-langs/?username=kisajaBeddawala&layout=compact&theme=tokyonight&hide_border=true&langs_count=6&cache_seconds=1800" height="160" alt="Top languages" />
 </div>
 
 <div align="center">
@@ -65,7 +65,11 @@ motto:      "Code. Learn. Repeat."
 ## 🐍 Contribution Snake
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/kisajaBeddawala/kisajaBeddawala/output/snake-dark.svg" alt="Snake animation" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Platane/snk/output/github-contribution-grid-snake-dark.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Platane/snk/output/github-contribution-grid-snake.svg" />
+    <img alt="Snake animation" src="https://raw.githubusercontent.com/Platane/snk/output/github-contribution-grid-snake.svg" />
+  </picture>
 </div>
 
 ---
