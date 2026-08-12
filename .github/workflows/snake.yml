@@ -1,4 +1,4 @@
-name: Generate snake animation
+name: Generate Output Assets
 
 on:
   schedule:
@@ -18,6 +18,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ── 1. Snake animation ─────────────────────────────────────────────────
       - name: Generate snake SVGs
         uses: Platane/snk/svg-only@v3
         with:
@@ -26,10 +27,219 @@ jobs:
             dist/github-contribution-grid-snake.svg
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
 
-      - name: Publish to output branch
+      # ── 2. Fetch GitHub stats via GraphQL ──────────────────────────────────
+      - name: Fetch GitHub stats
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USERNAME: ${{ github.repository_owner }}
+        run: |
+          PAYLOAD=$(jq -n \
+            --arg login "$USERNAME" \
+            --arg q "query(\$login:String!){user(login:\$login){name repositories(ownerAffiliations:[OWNER] isFork:false first:100){nodes{stargazerCount languages(first:10 orderBy:{field:SIZE direction:DESC}){edges{size node{name color}}}}}contributionsCollection{totalCommitContributions totalPullRequestContributions totalIssueContributions contributionCalendar{totalContributions weeks{contributionDays{contributionCount date}}}}}}" \
+            '{query: $q, variables: {login: $login}}')
+          curl -s \
+               -H "Authorization: bearer $GH_TOKEN" \
+               -H "Content-Type: application/json" \
+               -X POST \
+               -d "$PAYLOAD" \
+               https://api.github.com/graphql > /tmp/gh_data.json
+          echo "API response preview:"
+          cat /tmp/gh_data.json | jq '{name: .data.user.name, login: .data.user.login} // "error"'
+
+      # ── 3. Generate stats SVG cards with Python ────────────────────────────
+      - name: Generate stats SVG cards
+        env:
+          USERNAME: ${{ github.repository_owner }}
+        run: |
+          python3 << 'PYEOF'
+          import json, os, datetime
+
+          USERNAME = os.environ["USERNAME"]
+
+          with open("/tmp/gh_data.json") as f:
+              raw = json.load(f)
+
+          user  = raw.get("data", {}).get("user", {})
+          name  = user.get("name") or USERNAME
+          cc    = user.get("contributionsCollection", {})
+          repos = user.get("repositories", {}).get("nodes", [])
+
+          # ── aggregate stats ────────────────────────────────────────────────
+          total_stars    = sum(r.get("stargazerCount", 0) for r in repos)
+          total_commits  = cc.get("totalCommitContributions", 0)
+          total_prs      = cc.get("totalPullRequestContributions", 0)
+          total_issues   = cc.get("totalIssueContributions", 0)
+          total_contribs = cc.get("contributionCalendar", {}).get("totalContributions", 0)
+
+          # ── streak ─────────────────────────────────────────────────────────
+          weeks = cc.get("contributionCalendar", {}).get("weeks", [])
+          days  = sorted(
+              [d for w in weeks for d in w.get("contributionDays", [])],
+              key=lambda d: d["date"]
+          )
+          today_str = datetime.date.today().isoformat()
+
+          longest_streak = 0
+          tmp_streak = 0
+          for d in days:
+              if d["contributionCount"] > 0:
+                  tmp_streak += 1
+                  longest_streak = max(longest_streak, tmp_streak)
+              else:
+                  tmp_streak = 0
+
+          current_streak = 0
+          for d in reversed(days):
+              if d["date"] > today_str:
+                  continue
+              if d["contributionCount"] > 0:
+                  current_streak += 1
+              else:
+                  break
+
+          # ── top languages ──────────────────────────────────────────────────
+          lang_bytes, lang_color = {}, {}
+          for r in repos:
+              for edge in r.get("languages", {}).get("edges", []):
+                  n = edge["node"]["name"]
+                  lang_bytes[n] = lang_bytes.get(n, 0) + edge["size"]
+                  lang_color[n] = edge["node"].get("color") or "#8b949e"
+
+          sorted_langs = sorted(lang_bytes.items(), key=lambda x: x[1], reverse=True)[:6]
+          total_bytes  = sum(v for _, v in sorted_langs) or 1
+
+          # ── Tokyo Night palette ────────────────────────────────────────────
+          BG, BG2    = "#1a1b27", "#16213e"
+          BORDER     = "#2d2d5e"
+          TEXT, WHITE= "#a9b1d6", "#c0caf5"
+          TITLE      = "#7aa2f7"
+          ACCENT     = "#bb9af7"
+          GREEN      = "#9ece6a"
+          ORANGE     = "#e0af68"
+          RED        = "#f7768e"
+          TEAL       = "#2ac3de"
+
+          DEFS = lambda grad_id, c1, c2: f"""<defs>
+            <linearGradient id="{grad_id}" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%"   stop-color="{c1}"/>
+              <stop offset="100%" stop-color="{c2}"/>
+            </linearGradient>
+            <filter id="glow_{grad_id}">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>"""
+
+          # ── CARD 1: GitHub Stats ───────────────────────────────────────────
+          def make_stats_card():
+              W, H = 495, 195
+              rows = [
+                  ("Stars Earned",         total_stars,   ORANGE),
+                  ("Commits (this year)",  total_commits, GREEN),
+                  ("Pull Requests",        total_prs,     TEAL),
+                  ("Issues Opened",        total_issues,  RED),
+                  ("Total Contributions",  total_contribs, ACCENT),
+              ]
+              items = ""
+              for i, (label, val, color) in enumerate(rows):
+                  x = 25 + (i % 2) * 245
+                  y = 80 + (i // 2) * 42
+                  items += f"""
+                  <g transform="translate({x},{y})">
+                    <circle cx="5" cy="-5" r="5" fill="{color}" opacity="0.85"/>
+                    <text x="18" y="0"  fill="{TEXT}"  font-size="12" font-family="'Segoe UI',Helvetica,sans-serif">{label}</text>
+                    <text x="18" y="18" fill="{WHITE}" font-size="16" font-weight="700" font-family="'Segoe UI',Helvetica,sans-serif">{val:,}</text>
+                  </g>"""
+              return f"""<svg width="{W}" height="{H}" viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg">
+            {DEFS("s1", BG, BG2)}
+            <rect width="{W}" height="{H}" rx="12" fill="url(#s1)" stroke="{BORDER}" stroke-width="1.5"/>
+            <text x="25" y="38" fill="{TITLE}" font-size="18" font-weight="700"
+                  font-family="'Segoe UI',Helvetica,sans-serif" filter="url(#glow_s1)">{name}'s GitHub Stats</text>
+            <line x1="25" y1="50" x2="{W-25}" y2="50" stroke="{BORDER}" stroke-width="1"/>
+            {items}
+          </svg>"""
+
+          # ── CARD 2: Top Languages ──────────────────────────────────────────
+          def make_langs_card():
+              W, H  = 320, 195
+              bar_w = W - 50
+              bar_y = 68
+              segs, legend = "", ""
+              x_off = 0
+              for i, (lang, nbytes) in enumerate(sorted_langs):
+                  pct   = nbytes / total_bytes
+                  seg_w = bar_w * pct
+                  color = lang_color.get(lang, "#8b949e")
+                  segs += f'<rect x="{25+x_off:.1f}" y="{bar_y}" width="{seg_w:.1f}" height="8" fill="{color}" rx="2"/>'
+                  x_off += seg_w
+                  lx = 25 + (i % 2) * 145
+                  ly = bar_y + 28 + (i // 2) * 28
+                  legend += f"""
+                  <circle cx="{lx+5}" cy="{ly-4}" r="5" fill="{color}"/>
+                  <text x="{lx+15}" y="{ly}"    fill="{TEXT}"  font-size="12" font-family="'Segoe UI',Helvetica,sans-serif">{lang}</text>
+                  <text x="{lx+15}" y="{ly+13}" fill="{WHITE}" font-size="11" font-weight="600" font-family="'Segoe UI',Helvetica,sans-serif">{pct*100:.1f}%</text>"""
+              return f"""<svg width="{W}" height="{H}" viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg">
+            {DEFS("s2", BG, BG2)}
+            <rect width="{W}" height="{H}" rx="12" fill="url(#s2)" stroke="{BORDER}" stroke-width="1.5"/>
+            <text x="25" y="38" fill="{TITLE}" font-size="18" font-weight="700"
+                  font-family="'Segoe UI',Helvetica,sans-serif" filter="url(#glow_s2)">Most Used Languages</text>
+            <line x1="25" y1="50" x2="{W-25}" y2="50" stroke="{BORDER}" stroke-width="1"/>
+            <rect x="25" y="{bar_y}" width="{bar_w}" height="8" rx="4" fill="{BORDER}"/>
+            {segs}{legend}
+          </svg>"""
+
+          # ── CARD 3: Streak ─────────────────────────────────────────────────
+          def make_streak_card():
+              W, H  = 495, 195
+              col_w = (W - 50) / 3
+              cols  = [
+                  ("Total Contributions", f"{total_contribs:,}", TEAL),
+                  ("Current Streak",      f"{current_streak} days", ORANGE),
+                  ("Longest Streak",      f"{longest_streak} days", ACCENT),
+              ]
+              items = ""
+              for i, (label, val, color) in enumerate(cols):
+                  cx = 25 + col_w * i + col_w / 2
+                  if i > 0:
+                      items += f'<line x1="{25+col_w*i:.1f}" y1="65" x2="{25+col_w*i:.1f}" y2="{H-20}" stroke="{BORDER}" stroke-width="1"/>'
+                  items += f"""
+                  <text x="{cx:.1f}" y="105" fill="{color}" font-size="26" font-weight="800"
+                        text-anchor="middle" font-family="'Segoe UI',Helvetica,sans-serif">{val}</text>
+                  <text x="{cx:.1f}" y="130" fill="{TEXT}"  font-size="12" text-anchor="middle"
+                        font-family="'Segoe UI',Helvetica,sans-serif">{label}</text>"""
+              # mini activity bars (last 28 days)
+              recent = days[-28:]
+              bars   = ""
+              bw     = (W - 50) / max(len(recent), 1)
+              mc     = max((d["contributionCount"] for d in recent), default=1) or 1
+              for j, d in enumerate(recent):
+                  cnt   = d["contributionCount"]
+                  frac  = cnt / mc
+                  bh    = max(2, int(30 * frac))
+                  alpha = 0.2 + 0.8 * frac
+                  bars += f'<rect x="{25+j*bw:.1f}" y="{H-20-bh}" width="{max(1,bw-1):.1f}" height="{bh}" rx="1" fill="{ORANGE}" opacity="{alpha:.2f}"/>'
+              return f"""<svg width="{W}" height="{H}" viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg">
+            {DEFS("s3", BG, BG2)}
+            <rect width="{W}" height="{H}" rx="12" fill="url(#s3)" stroke="{BORDER}" stroke-width="1.5"/>
+            <text x="{W//2}" y="38" fill="{TITLE}" font-size="18" font-weight="700" text-anchor="middle"
+                  font-family="'Segoe UI',Helvetica,sans-serif" filter="url(#glow_s3)">GitHub Streak Stats</text>
+            <line x1="25" y1="50" x2="{W-25}" y2="50" stroke="{BORDER}" stroke-width="1"/>
+            {items}{bars}
+          </svg>"""
+
+          os.makedirs("dist", exist_ok=True)
+          with open("dist/github-stats.svg",  "w") as f: f.write(make_stats_card())
+          with open("dist/github-langs.svg",   "w") as f: f.write(make_langs_card())
+          with open("dist/github-streak.svg",  "w") as f: f.write(make_streak_card())
+          print("Stats SVGs written to dist/")
+          PYEOF
+
+      # ── 4. Publish ALL assets (snake + stats) together ─────────────────────
+      - name: Publish all assets to output branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: output
           force_orphan: true
+          commit_message: "chore: update snake + stats cards [skip ci]"
