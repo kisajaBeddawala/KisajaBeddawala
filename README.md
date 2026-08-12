@@ -52,12 +52,12 @@ motto:      "Code. Learn. Repeat."
 ## 📊 GitHub Stats
 
 <div align="center">
-  <img src="https://github-readme-stats-sigma-five.vercel.app/api?username=kisajaBeddawala&show_icons=true&theme=tokyonight&hide_border=true&count_private=true&cache_seconds=1800" height="160" alt="GitHub stats" />
-  <img src="https://github-readme-stats-sigma-five.vercel.app/api/top-langs/?username=kisajaBeddawala&layout=compact&theme=tokyonight&hide_border=true&langs_count=6&cache_seconds=1800" height="160" alt="Top languages" />
+  <img src="https://raw.githubusercontent.com/kisajaBeddawala/kisajaBeddawala/output/github-stats.svg" height="160" alt="GitHub stats" />
+  <img src="https://raw.githubusercontent.com/kisajaBeddawala/kisajaBeddawala/output/github-langs.svg" height="160" alt="Top languages" />
 </div>
 
 <div align="center">
-  <img src="https://streak-stats.demolab.com?user=kisajaBeddawala&theme=tokyonight&hide_border=true&border_radius=12&date_format=M%20j%5B%2C%20Y%5D" alt="GitHub streak" />
+  <img src="https://raw.githubusercontent.com/kisajaBeddawala/kisajaBeddawala/output/github-streak.svg" alt="GitHub streak" />
 </div>
 
 ---
