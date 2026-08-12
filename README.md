@@ -47,34 +47,55 @@ motto:      "Code. Learn. Repeat."
 
 </div>
 
+
 ---
 
-## 📊 GitHub Stats
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=6,11,20&height=2&section=header" width="100%" alt="divider" />
+</div>
+
+<h2 align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=20&duration=2500&pause=1000&color=7AA2F7&center=true&vCenter=true&width=420&lines=📊+GitHub+Stats" alt="GitHub Stats heading" />
+</h2>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/kisajaBeddawala/kisajaBeddawala/output/github-stats.svg" height="160" alt="GitHub stats" />
-  <img src="https://raw.githubusercontent.com/kisajaBeddawala/kisajaBeddawala/output/github-langs.svg" height="160" alt="Top languages" />
+  <img src="https://raw.githubusercontent.com/kisajaBeddawala/kisajaBeddawala/output/github-stats.svg" height="165" alt="GitHub stats" />&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/kisajaBeddawala/kisajaBeddawala/output/github-langs.svg" height="165" alt="Top languages" />
 </div>
+
+<br/>
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/kisajaBeddawala/kisajaBeddawala/output/github-streak.svg" alt="GitHub streak" />
 </div>
 
----
-
-## 🐍 Contribution Snake
-
 <div align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Platane/snk/output/github-contribution-grid-snake-dark.svg" />
-    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/Platane/snk/output/github-contribution-grid-snake.svg" />
-    <img alt="Snake animation" src="https://raw.githubusercontent.com/Platane/snk/output/github-contribution-grid-snake.svg" />
-  </picture>
+  <img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=6,11,20&height=2&section=header" width="100%" alt="divider" />
 </div>
 
 ---
 
-## 📈 Activity Graph
+<h2 align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=20&duration=2500&pause=1000&color=9ECE6A&center=true&vCenter=true&width=420&lines=🐍+Contribution+Snake" alt="Snake heading" />
+</h2>
+
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/kisajaBeddawala/kisajaBeddawala/output/github-contribution-grid-snake-dark.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/kisajaBeddawala/kisajaBeddawala/output/github-contribution-grid-snake.svg" />
+    <img alt="Snake animation" src="https://raw.githubusercontent.com/kisajaBeddawala/kisajaBeddawala/output/github-contribution-grid-snake.svg" />
+  </picture>
+</div>
+
+<div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&color=gradient&customColorList=6,11,20&height=2&section=header" width="100%" alt="divider" />
+</div>
+
+---
+
+<h2 align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=20&duration=2500&pause=1000&color=BB9AF7&center=true&vCenter=true&width=420&lines=📈+Activity+Graph" alt="Activity Graph heading" />
+</h2>
 
 <div align="center">
   <img src="https://github-readme-activity-graph.vercel.app/graph?username=kisajaBeddawala&theme=tokyo-night&hide_border=true&radius=12" alt="Activity graph" />
@@ -85,3 +106,7 @@ motto:      "Code. Learn. Repeat."
 <div align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=120&section=footer&animation=fadeIn" alt="Footer banner" />
 </div>
+
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=14&duration=3000&pause=1000&color=A9B1D6&center=true&vCenter=true&width=500&lines=Thanks+for+visiting!+⭐+Star+a+repo+if+you+like+my+work!" alt="Footer text" />
+</div>
