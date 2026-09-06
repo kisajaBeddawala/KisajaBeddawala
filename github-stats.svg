@@ -1,0 +1,42 @@
+<svg width="495" height="195" viewBox="0 0 495 195" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+  <linearGradient id="s1" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%"   stop-color="#1a1b27"/>
+    <stop offset="100%" stop-color="#16213e"/>
+  </linearGradient>
+  <filter id="glow_s1">
+    <feGaussianBlur stdDeviation="3" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</defs>
+  <rect width="495" height="195" rx="12" fill="url(#s1)" stroke="#2d2d5e" stroke-width="1.5"/>
+  <text x="25" y="38" fill="#7aa2f7" font-size="18" font-weight="700"
+        font-family="'Segoe UI',Helvetica,sans-serif" filter="url(#glow_s1)">Kisaja Beddawala's GitHub Stats</text>
+  <line x1="25" y1="50" x2="470" y2="50" stroke="#2d2d5e" stroke-width="1"/>
+  
+        <g transform="translate(25,80)">
+          <circle cx="5" cy="-5" r="5" fill="#e0af68" opacity="0.85"/>
+          <text x="18" y="0"  fill="#a9b1d6"  font-size="12" font-family="'Segoe UI',Helvetica,sans-serif">Stars Earned</text>
+          <text x="18" y="18" fill="#c0caf5" font-size="16" font-weight="700" font-family="'Segoe UI',Helvetica,sans-serif">0</text>
+        </g>
+        <g transform="translate(270,80)">
+          <circle cx="5" cy="-5" r="5" fill="#9ece6a" opacity="0.85"/>
+          <text x="18" y="0"  fill="#a9b1d6"  font-size="12" font-family="'Segoe UI',Helvetica,sans-serif">Commits (this year)</text>
+          <text x="18" y="18" fill="#c0caf5" font-size="16" font-weight="700" font-family="'Segoe UI',Helvetica,sans-serif">346</text>
+        </g>
+        <g transform="translate(25,122)">
+          <circle cx="5" cy="-5" r="5" fill="#2ac3de" opacity="0.85"/>
+          <text x="18" y="0"  fill="#a9b1d6"  font-size="12" font-family="'Segoe UI',Helvetica,sans-serif">Pull Requests</text>
+          <text x="18" y="18" fill="#c0caf5" font-size="16" font-weight="700" font-family="'Segoe UI',Helvetica,sans-serif">42</text>
+        </g>
+        <g transform="translate(270,122)">
+          <circle cx="5" cy="-5" r="5" fill="#f7768e" opacity="0.85"/>
+          <text x="18" y="0"  fill="#a9b1d6"  font-size="12" font-family="'Segoe UI',Helvetica,sans-serif">Issues Opened</text>
+          <text x="18" y="18" fill="#c0caf5" font-size="16" font-weight="700" font-family="'Segoe UI',Helvetica,sans-serif">6</text>
+        </g>
+        <g transform="translate(25,164)">
+          <circle cx="5" cy="-5" r="5" fill="#bb9af7" opacity="0.85"/>
+          <text x="18" y="0"  fill="#a9b1d6"  font-size="12" font-family="'Segoe UI',Helvetica,sans-serif">Total Contributions</text>
+          <text x="18" y="18" fill="#c0caf5" font-size="16" font-weight="700" font-family="'Segoe UI',Helvetica,sans-serif">488</text>
+        </g>
+</svg>
